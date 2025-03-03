@@ -1,0 +1,97 @@
+COACHING STEPS	CARES TOOL	COACHING TEAM TOOL
+Center Together	"Please indicate the extent to which each criterion for the coaching process step of Centering Together was demonstrated by the coach.
+	
+Coach uses centering techniques to increase focus and remove distractions from the coaching session/setting.				
+Coach checks in about the mindset of the participant prior to the coaching session.				
+Coach validated the participants’ mindsets.				
+Coach validated the participants’ mindsets prior to clarifying the focus. 		
+
+Coach encourages participant to lead centering activities."	"Step 1. Observable behaviors. Select the extent to which each observable behavior was demonstrated.
+•	Manages distractions.
+•	Asks the coachee how they would like to center. 
+•	Uses centering techniques that match the coachee's preference. 
+•	Checks in with the coachee for readiness to proceed."
+Clarify the Focus	""Please indicate the extent to which each criterion for the coaching process step of Clarifying the Focus was demonstrated by the coach.
+•	Coach asks about the goals of previous coaching sessions in relation to the current session in order to clarify the focus. 
+•	Coach asks about the significance of the challenge facing the participant(s). 
+•	Coach asks about changes to the challenge, or the context in which the challenges are occurring, that the participant(s) is facing. 
+•	Coach explores other issues the participant(s) is facing to ensure clarity of focus before beginning the session""	"Step 2. Observable behaviors. Select the extent to which each observable behavior was demonstrated.
+•	Asks open-ended questions to gain understanding of coachee's problem/challenge.
+•	Asks probing questions to identify what is most important for coachee to focus on today.
+•	Reflects and clarifies to narrow the focus. 
+•	Summarizes to confirm understanding of focus with coachee."
+Identify the Goal	"Please indicate the extent to which each criterion for the coaching process step of Identifying the Goal was demonstrated by the coach.
+•	Co-Coach uses paraphrasing to identify the goal with the participant(s).Coach asks the participant(s) for intended outcomes and impacts of the determined goal(s).
+•	Coach reviews the SMART criteria for the identified goal when appropriate.
+•	Coach facilitates goal amendment, in applicable.
+•	Coach validates the goal through positive feedback."	"Step 3. Observable behaviors. Select the extent to which each observable behavior was demonstrated.
+•	Intended outcomes and ultimate impact are clear.
+•	Coachee's indicators of successful goal achievement are clear.
+•	Reflects and clarifies to ensure goal is relevant to the focus."
+Develop an Action Plan	"Please indicate the extent to which each criterion for the coaching process step of Developing an Action Plan was demonstrated by the coach.
+•	The coach asks about the participant’s efforts toward achieving their goals, including assisting in identifying supports.
+•	The focus is on participant's action towards the goal versus on the Coach developing action items.
+•	Coach validates the action items and their relevance to the participant’s goals.
+•	Coach notes the identification of action items.
+•	Action items were clear for both the Coach and participant."	"Step 4. Observable behaviors. Select the extent to which each observable behavior was demonstrated. 
+•	Uses questions and reflections to encourage critical thinking and idea generation around specific steps to achieve the goal. 
+•	Uses coaching skills to help coachee reflect on how achievable the action steps are to achieving the goal. 
+•	Supports coachee's prioritization of action steps, including time frames. 
+•	Inquires about specific supports needed to help achieve the goal. 
+•	The time frame for goal achievement has a beginning and end."
+Gain Committment	"Please indicate the extent to which each criterion for the coaching process step of Gaining Commitment was demonstrated by the coach.
+•	Coach asks about the participant(s) commitment to the stated goal(s).
+•	Coach uses a rating scale to identify the participant(s) level of commitment.
+•	Coach facilitates discussion regarding barriers to achieving the goal.
+•	If applicable, coach facilitates discussion to problem solve for potential barriers to achieving the goal.
+•	Appropriate exploration of commitment level based upon the participant's stated commitment level."	"Step 5. Observable behaviors. Select the extent to which each observable behavior was demonstrated.
+•	Reflects and clarifies to confirm understanding of action plan and its link to goal achievement. 
+•	Reflects back and/or asks scaling questions with anchors to assess level of commitment.
+•	Inquires about specific barriers and if any, how they will be addressed."
+Assessing Progress	"Please indicate the extent to which each criterion for the coaching process step of Assessing Progress was demonstrated by the coach.
+•	Coach asks how the participant has been and will continue to assess their progress.
+•	Coach uses SMART criteria to facilitate assessment of progress towards goals.
+•	Coach solicits feedback from participant(s) regarding their roles in supporting the participant in reaching the goal.
+•	Coach facilitates discussion of the coaching process and the stated challenge.
+•	Coach validates the participant(s) plan for assessing progress towards the goal.
+•	The ongoing process for assessment of progress towards the goal is clear and relevant to participant(s)."	"Step 6. Observable behaviors. Select the extent to which each observable behavior was demonstrated.
+•	How coachee intends to track progress of goal is clear. 
+•	Asks how the coach can follow-up to support goal achievement. 
+•	Summarizes to recap session and next steps. 
+•	Asks coachee for feedback on the helpfulness of the coaching session."
+PART 2: GLOBAL MEASURES		
+Questioning	"Novice (1) Coach uses open-ended questions that invite reflection by the participant. Use of questions that begin with "what” or “how.”
+
+Advanced Beginner (2 )Use of open-ended questions that invite reflection by the participant, including questions that begin with "what” or “how.” Encouragers used when appropriate, such as “and then?" to facilitate discussion and allow participant to explore the subject matter further.
+
+Competent (3) Use of open-ended questions that invite reflection by the participant, including questions that begin with "what” or “how.” Coach remains neutral when questioning, managing emotions. Probing questions are used when appropriate. Encouragers used when appropriate, such as “and then?" to facilitate discussion and allow participant to explore the subject matter further. Refocuses the discussion when necessary.
+
+Proficient (4) Use of open-ended questions that invite reflection by the participant, including questions that begin with "what” or “how.” Coach asks questions rather than providing direction or answers. Questions are used to seek clarification and/or to invite participant reflection. Coach remains neutral when questioning, managing emotions. Probing questions are used when appropriate. Encouragers used when appropriate, such as “and then?" to facilitate discussion and allow participant to explore the subject matter further. Refocuses the discussion when necessary.
+
+Highly Profienct (5) Use of open-ended questions that invite reflection by the participant, including questions that begin with "what” or “how.” Coach asks questions rather than providing direction or answers. Questions are used to seek clarification and/or to invite participant reflection. Coach remains neutral when questioning, managing emotions. Probing questions are used when appropriate. Encouragers used when appropriate, such as “and then?" to facilitate discussion and allow participant to explore the subject matter further. Refocuses the discussion when necessary.
+Questioning reflects sincere curiosity and respect for participant.  Refrains from asking “why?” during session. Is comfortable with silence and allows times of silence for processing. Uses pauses and/or silence to emphasize the significance of a question."	"Low Skill: Used more than four asking mistakes. Needs improvement on use of open- ended questions. 
+Intermediate Skill: Used 3-4 asking mistakes (e.g., closed- ended, leading or why questions). 
+High Skill: Used open-ended questions that moved the coachee to reflection and discovery. May have used 1-2 asking mistakes with or without reframes."
+Presence & Listening		"Low Skill: Had more than four 
+Intermediate Skill: Had 3-4 instances of either closed body instances of closed body language, inattention, attending to language, inattention, attending to distractions, talking over, finishing distractions, talking over, finishing 
+High Skill: Used physical cues to demonstrate listening (e.g., facing coachee, leaning in, non-verbal minimal encouragements). No physical barriers between coach and coachee. Allowed for silence. Pace was measured. May have had 1-2 instances of closed body language, inattention, attending to distractions, talking over, finishing the coachee's thought, or rushing."
+Feedback	"Novice (1) Feedback is strengths based. Coach provides positive feedback. Feedback is not overly critical, derogatory, or vague. Feedback is specific to the positive areas and areas of need. 
+Advanced Beginner (2) Feedback is strengths based. Feedback is clear, specific, actionable and constructive. Coach provides positive feedback. Feedback is not overly critical, derogatory, or vague. Feedback is specific to the positive areas and areas of need. 
+Competent (3) Feedback is strengths based. Feedback is clear, specific, actionable and constructive. Coach provides positive feedback. Feedback is focused on behaviors, rather than personal feedback. Coach does not demonstrate being nervous or anxious. Feedback is not overly critical, derogatory, or vague. Feedback is specific to the positive areas and areas of need. 
+Proficient (4) Feedback is strengths based. Feedback is clear, specific, actionable and constructive. Coach provides positive feedback. Feedback is focused on behaviors, rather than personal feedback. Does not demonstrate being nervous or anxious. Feedback is not overly critical, derogatory, or vague. Feedback is specific to the positive areas and areas of need. Coach demonstrates the use of the giving feedback steps when facilitating providing feedback. 
+Highly Proficient (5) Feedback is strengths based. Feedback is clear, specific, actionable and constructive. Coach provides positive feedback. Feedback is focused on behaviors, rather than personal feedback. Coach is confident when presenting feedback to the participant; does not demonstrate being nervous or anxious. Feedback is not overly critical, derogatory, or vague. Feedback is specific to the positive areas and areas of need. Coach demonstrates the use of the giving feedback steps when facilitating providing feedback."	"Low Skill: Gives feedback that is judgmental or discouraging. 
+Intermediate Skill: Had 1-2 instances of feedback that was vague, not strengths-based, did not follow the 4:1 feedback ratio, or focused on traits instead of behaviors. High Skill: Reflected on content and feeling. Checked assumptions. Used clarifying questions to gain understanding beyond what is being said. Balanced use of reflections and clarifying questions."
+Reflecting & Clarifying	"Novice (1) Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement. Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement. Uses open ended questions to seek clarification and/or understanding. 
+Advanced Beginner (2) Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement. Uses open ended questions to seek clarification and/or understanding. Summarizes information to ensure understanding. 
+Competent (3) Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement; Uses open ended questions to seek clarification and/or understanding; Summarizes information to ensure understanding. 
+Proficient (4) Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement; Uses open ended questions to seek clarification and/or understanding; Summarizes information to ensure understanding. Coach verbally acknowledges feelings when appropriate, Coach refrains from personalizing information with own perspective. 
+Highly proficient (5) Uses the participant's words to reflect understanding of intent; Summarization to keep the conversation focused and to highlight movement; Uses open ended questions to seek clarification and/or understanding; Summarizes information to ensure understanding. Coach verbally acknowledges feelings when appropriate; Coach refrains from personalizing information with own perspective; Paraphrases uses the participant’s language to understand what is being said."	Low Skill: Minimal to no use of reflection and clarifying in the coaching process. Intermediate Skill: Used only one type of reflection (content or feeling). Unbalanced use of reflections and clarifying questions. High Skill: Reflected on content and feelings. Checked assumptions. Used clarifying questions to gain understanding beyond what is being said. Balanced use of reflections and clarifying questions.
+Accountability		"Low Skill: Coachee's goal lacked more than one of the SMART elements. 
+Intermediate Skill: Coachee’s goal lacked one of the SMART elements.
+High Skill: Used coaching skills to help coachee set a goal that is specific, measurable, achievable, relevant and time-bound."
+Alignment	This section is not on CARES Tool	"Low Skill: Focus, goal and action 
+Intermediate Skill: Struggled to plan lacked alignment. identify goal due to unclear focus resulting in the need to backtrack to an earlier step. 
+High Skill: Used coaching skills to align focus, goal and action plan. Was able to adapt when coachee's focus shifted."
+Coaching Mindset	This section is not on CARES Tool	"Low Skill: Had three or more instances of giving advice or controlling the direction of the conversation, or self-referential. 
+Intermediate Skill: After using questioning to encourage critical thinking, asked permission before giving advice or personal experience. Maintained a curious, collaborative and open approach. Coachee spoke more than coach throughout.
+High Skill: Creates a partnership for learning and change by positioning the coachee as the expert and able to find the answers to their own questions. Maintained a curious, collaborative, and open approach. Coachee spike more than coach throughout."

@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>GPT-4o Mini Coaching Simulation</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --dark-color: #34495e;
+            --light-color: #ecf0f1;
+            --warning-color: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f7fa;
+            color: #333;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 20px 0;
+            text-align: center;
+        }
+        
+        h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        
+        .subtitle {
+            font-size: 1.2rem;
+            font-weight: 300;
+            margin-top: 10px;
+        }
+        
+        .setup-panel {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        
+        select, button {
+            width: 100%;
+            padding: 12px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 1rem;
+        }
+        
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .simulation-area {
+            display: none;
+            margin-top: 30px;
+        }
+        
+        .chat-container {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            height: 600px;
+        }
+        
+        .chat-header {
+            background-color: var(--dark-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .scenario-title {
+            font-weight: 600;
+            font-size: 1.2rem;
+        }
+        
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+        }
+        
+        .employee-message {
+            justify-content: flex-start;
+        }
+        
+        .coach-message {
+            justify-content: flex-end;
+        }
+        
+        .message-bubble {
+            max-width: 70%;
+            padding: 15px;
+            border-radius: 20px;
+        }
+        
+        .employee-bubble {
+            background-color: #f1f1f1;
+        }
+        
+        .coach-bubble {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .voice-controls {
+            background-color: #f9f9f9;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            border-top: 1px solid #eee;
+        }
+        
+        .voice-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            cursor: pointer;
+            margin-right: 10px;
+            flex-shrink: 0;
+        }
+        
+        .voice-btn.recording {
+            background-color: var(--warning-color);
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        /* 새로 추가: 텍스트 영역 디자인 */
+        .coach-textarea {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+            font-size: 1rem;
+            resize: vertical; /* 세로 크기 조절 가능 */
+            min-height: 45px;
+            max-height: 150px;
+            overflow: auto;
+        }
+        
+        /* Send 버튼 디자인 조정 */
+        #sendTextBtn {
+            padding: 10px 16px;
+            width: auto;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        #sendTextBtn:hover {
+            background-color: #2980b9;
+        }
+        
+        .voice-status {
+            /* 마이크 안내 문구를 없애기 위해 숨김 처리 */
+            display: none;
+        }
+        
+        .feedback-panel {
+            background-color: #f9f9f9;
+            border-left: 5px solid var(--secondary-color);
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .feedback-title {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+        }
+        
+        .feedback-points {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .feedback-points li {
+            margin-bottom: 5px;
+        }
+        
+        /* 부분 평가 표시 영역 */
+        #partialEvaluation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #ecf0f1;
+            border-radius: 5px;
+        }
+        #partialEvaluation h4 {
+            margin: 0 0 5px 0;
+        }
+        
+        .results-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.8);
+            z-index: 100;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .results-content {
+            background-color: white;
+            border-radius: 10px;
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        
+        .grade {
+            font-size: 5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 20px 0;
+        }
+        
+        .results-feedback {
+            text-align: left;
+            margin: 20px 0;
+        }
+        
+        .restart-btn {
+            background-color: var(--secondary-color);
+            margin-top: 20px;
+        }
+
+        #skipBtn {
+            background-color: var(--warning-color);
+            margin-top: 10px;
+        }
+        #skipBtn:hover {
+            background-color: #c0392b;
+        }
+        #endSessionBtn {
+            background-color: var(--secondary-color);
+            margin-top: 10px;
+        }
+        #endSessionBtn:hover {
+            background-color: #27ae60;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>GPT-4o Mini Coaching Simulation</h1>
+            <div class="subtitle">Practice your coaching skills with advanced GPT integration</div>
+        </div>
+    </header>
+    
+    <div class="container">
+        <!-- Setup Panel -->
+        <div class="setup-panel" id="setupPanel">
+            <h2>Start a Coaching Session</h2>
+            <p>Select your desired scenario type and difficulty. GPT-4o Mini will create a scenario introduction for you.</p>
+            
+            <div class="form-group">
+                <label for="difficulty">Difficulty Level:</label>
+                <select id="difficulty">
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="scenarioType">Scenario Type:</label>
+                <select id="scenarioType">
+                    <option value="performance">Performance Improvement</option>
+                    <option value="conflict">Conflict Resolution</option>
+                    <option value="career">Career Development</option>
+                    <option value="change">Change Management</option>
+                </select>
+            </div>
+            
+            <button id="startBtn">Start Simulation</button>
+        </div>
+        
+        <!-- Simulation Area -->
+        <div class="simulation-area" id="simulationArea">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <div class="scenario-title" id="scenarioTitle">Loading scenario...</div>
+                    <div class="timer" id="timer">00:00</div>
+                </div>
+                
+                <div class="chat-messages" id="chatMessages">
+                    <!-- Employee & Coach messages appear here -->
+                </div>
+                
+                <!-- Voice Controls -->
+                <div class="voice-controls">
+                    <div class="voice-btn" id="voiceBtn">
+                        <i class="fas fa-microphone"></i>
+                    </div>
+                    <div class="voice-status" id="voiceStatus"></div>
+                    
+                    <!-- textarea로 변경하여 줄바꿈 가능하게 -->
+                    <textarea id="textInput" class="coach-textarea" placeholder="Type your response here..."></textarea>
+                    <button id="sendTextBtn">Send</button>
+                </div>
+            </div>
+            
+            <!-- Feedback Panel -->
+            <div class="feedback-panel" id="feedbackPanel">
+                <div class="feedback-title">Coaching Feedback</div>
+                <ul class="feedback-points" id="feedbackPoints">
+                    <li>Begin talking to receive feedback from GPT-4o</li>
+                </ul>
+                
+                <!-- 부분 평가 표시 영역 -->
+                <div id="partialEvaluation"></div>
+            </div>
+
+            <!-- Skip to End button -->
+            <button id="skipBtn">Skip to End</button>
+            <button id="endSessionBtn">End Session</button>
+        </div>
+        
+        <!-- Results Modal -->
+        <div class="results-modal" id="resultsModal">
+            <div class="results-content">
+                <h2>Session Complete</h2>
+                <p>Here's how you did in your coaching session:</p>
+                
+                <div class="grade" id="finalGrade">A</div>
+                <div id="scorePercentage">Score: 95%</div>
+                
+                <div class="results-feedback">
+                    <h3>Feedback Summary</h3>
+                    <ul id="finalFeedback">
+                        <!-- Final feedback points -->
+                    </ul>
+                </div>
+                
+                <button class="restart-btn" id="restartBtn">Start New Session</button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let sessionId = null;
+        let mediaRecorder = null;
+        let audioChunks = [];
+        let isRecording = false;
+        let startTime = null;
+        let timerInterval = null;
+
+        const setupPanel = document.getElementById('setupPanel');
+        const simulationArea = document.getElementById('simulationArea');
+        const scenarioTitle = document.getElementById('scenarioTitle');
+        const chatMessages = document.getElementById('chatMessages');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const voiceStatus = document.getElementById('voiceStatus');
+        const feedbackPoints = document.getElementById('feedbackPoints');
+        const resultsModal = document.getElementById('resultsModal');
+        const finalGrade = document.getElementById('finalGrade');
+        const scorePercentage = document.getElementById('scorePercentage');
+        const finalFeedback = document.getElementById('finalFeedback');
+        const restartBtn = document.getElementById('restartBtn');
+        const timerEl = document.getElementById('timer');
+        const partialEvalDiv = document.getElementById('partialEvaluation');
+
+        const skipBtn = document.getElementById('skipBtn');
+        const endSessionBtn = document.getElementById('endSessionBtn');
+        const textInput = document.getElementById('textInput');
+        const sendTextBtn = document.getElementById('sendTextBtn');
+
+        document.getElementById('startBtn').addEventListener('click', startSimulation);
+        skipBtn.addEventListener('click', skipToEnd);
+        endSessionBtn.addEventListener('click', endSession);
+        restartBtn.addEventListener('click', resetSimulation);
+
+        voiceBtn.addEventListener('click', toggleRecording);
+        sendTextBtn.addEventListener('click', async () => {
+            const text = textInput.value.trim();
+            if (text) {
+                await sendResponse(null, text);
+                textInput.value = '';
+            }
+        });
+        
+        async function startSimulation() {
+            const difficulty = document.getElementById('difficulty').value;
+            const scenarioType = document.getElementById('scenarioType').value;
+            
+            try {
+                const response = await fetch('/api/start-simulation', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ difficulty, scenario_type: scenarioType })
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    sessionId = data.session_id;
+                    scenarioTitle.textContent = data.scenario_name;
+                    chatMessages.innerHTML = '';
+                    addMessage('employee', data.text);
+
+                    if (data.audio) {
+                        playAudio(data.audio);
+                    }
+
+                    setupPanel.style.display = 'none';
+                    simulationArea.style.display = 'block';
+                    startTimer();
+                } else {
+                    alert(data.error);
+                }
+            } catch (err) {
+                console.error('Error starting sim:', err);
+                alert('Error. Check console.');
+            }
+        }
+
+        function addMessage(role, text) {
+            const msgDiv = document.createElement('div');
+            msgDiv.classList.add('message');
+            if (role === 'employee') {
+                msgDiv.classList.add('employee-message');
+            } else {
+                msgDiv.classList.add('coach-message');
+            }
+
+            const bubble = document.createElement('div');
+            bubble.classList.add('message-bubble');
+            if (role === 'employee') {
+                bubble.classList.add('employee-bubble');
+            } else {
+                bubble.classList.add('coach-bubble');
+            }
+            bubble.textContent = text;
+
+            msgDiv.appendChild(bubble);
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function toggleRecording() {
+            if (!isRecording) {
+                try {
+                    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                    startRecording(stream);
+                } catch (err) {
+                    console.error("Mic error:", err);
+                    // voiceStatus.textContent = 'Error: Cannot access microphone.';
+                }
+            } else {
+                stopRecording();
+            }
+        }
+
+        function startRecording(stream) {
+            audioChunks = [];
+            mediaRecorder = new MediaRecorder(stream);
+            mediaRecorder.addEventListener('dataavailable', e => {
+                audioChunks.push(e.data);
+            });
+            mediaRecorder.addEventListener('stop', processRecording);
+            mediaRecorder.start();
+            isRecording = true;
+            voiceBtn.classList.add('recording');
+        }
+
+        function stopRecording() {
+            if(mediaRecorder && isRecording) {
+                mediaRecorder.stop();
+                isRecording = false;
+                voiceBtn.classList.remove('recording');
+            }
+        }
+
+        async function processRecording() {
+            const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+            const reader = new FileReader();
+            reader.addEventListener('load', async () => {
+                const base64Audio = reader.result;
+                await sendResponse(base64Audio);
+            });
+            reader.readAsDataURL(audioBlob);
+        }
+
+        async function sendResponse(audioData, text) {
+            if(!sessionId) {
+                return;
+            }
+            try {
+                const body = { session_id: sessionId };
+                if (audioData) body.audio = audioData;
+                if (text) body.text = text;
+                const response = await fetch('/api/respond', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(body)
+                });
+                const data = await response.json();
+                if (response.ok) {
+                    // Coach input
+                    addMessage('coach', data.coach_input);
+                    // Employee response
+                    addMessage('employee', data.text);
+                    // Update feedback from employee
+                    updateFeedback(data.evaluation);
+                    
+                    // 부분 평가(Partial Evaluation) 있으면 업데이트
+                    if (data.partial_score) {
+                        updatePartialEvaluation(data.partial_score);
+                    }
+
+                    if(data.audio) {
+                        playAudio(data.audio);
+                    }
+
+                    if(data.is_complete && data.final_score) {
+                        endSimulation(data.final_score);
+                    }
+                } else {
+                    console.error('Error:', data.error);
+                }
+            } catch (err) {
+                console.error("Error sending resp:", err);
+            }
+        }
+
+        function updateFeedback(evaluation) {
+            if(!evaluation || !evaluation.feedback) return;
+            evaluation.feedback.forEach(f => {
+                const li = document.createElement('li');
+                li.textContent = f;
+                feedbackPoints.appendChild(li);
+            });
+        }
+
+        // 부분 평가를 feedback-panel 하단에 표시
+        function updatePartialEvaluation(score) {
+            partialEvalDiv.innerHTML = ""; // 기존 내용 초기화
+            if (!score || !score.grade || !score.percentage || !score.strengths || !score.areas_of_improvement) {
+                partialEvalDiv.innerHTML = "<p>Partial evaluation data not available.</p>";
+                return;
+            }
+            partialEvalDiv.innerHTML += "<h4>Coach Evaluation (so far)</h4>";
+            partialEvalDiv.innerHTML += "<p>Grade so far: <strong>" + score.grade + "</strong> (" + score.percentage + "%)</p>";
+            
+            partialEvalDiv.innerHTML += "<p><strong>Strengths:</strong></p><ul>";
+            score.strengths.forEach(s => {
+                partialEvalDiv.innerHTML += "<li>" + s + "</li>";
+            });
+            partialEvalDiv.innerHTML += "</ul>";
+            
+            partialEvalDiv.innerHTML += "<p><strong>Areas of Improvement:</strong></p><ul>";
+            score.areas_of_improvement.forEach(a => {
+                partialEvalDiv.innerHTML += "<li>" + a + "</li>";
+            });
+            partialEvalDiv.innerHTML += "</ul>";
+        }
+
+        async function skipToEnd() {
+            if(!sessionId) {
+                alert('No active session to skip.');
+                return;
+            }
+            try {
+                const resp = await fetch('/api/skip-to-end', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: sessionId })
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    if (data.final_score) {
+                        endSimulation(data.final_score);
+                    } else {
+                        alert('Error: No evaluation data returned.');
+                    }
+                } else {
+                    console.error('Skip failed:', data);
+                    alert(data.error || 'Unknown skip error');
+                }
+            } catch (err) {
+                console.error("Skip error:", err);
+                alert('Error skipping to end. Check console.');
+            }
+        }
+
+        async function endSession() {
+            if (!sessionId) {
+                alert('No active session to end.');
+                return;
+            }
+            try {
+                const resp = await fetch('/api/skip-to-end', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ session_id: sessionId })
+                });
+                const data = await resp.json();
+                if (resp.ok) {
+                    if (data.final_score) {
+                        endSimulation(data.final_score);
+                    } else {
+                        alert('Error: No evaluation data returned.');
+                    }
+                } else {
+                    console.error("End session failed:", data);
+                    alert(data.error || 'Unknown end session error');
+                }    
+            } catch (err) {
+                console.error("End session error:", err);
+                alert('Error ending session. Check console.');
+            }
+        }
+
+        function endSimulation(finalScore) {
+            clearInterval(timerInterval);
+            if (!finalScore || !finalScore.grade || !finalScore.percentage || !finalScore.strengths || !finalScore.areas_of_improvement) {
+                finalGrade.textContent = 'N/A';
+                scorePercentage.textContent = 'Score: N/A';
+                finalFeedback.innerHTML = '<li>Error: Incomplete evaluation data</li>';
+            } else {
+                finalGrade.textContent = finalScore.grade;
+                scorePercentage.textContent = `Score: ${finalScore.percentage}%`;
+                finalFeedback.innerHTML = '';
+                finalScore.strengths.forEach(s => {
+                    const li = document.createElement('li');
+                    li.textContent = `[Strength] ${s}`;
+                    finalFeedback.appendChild(li);
+                });
+                finalScore.areas_of_improvement.forEach(a => {
+                    const li = document.createElement('li');
+                    li.textContent = `[Improve] ${a}`;
+                    finalFeedback.appendChild(li);
+                });
+            }    
+            resultsModal.style.display = 'flex';
+        }
+
+        function resetSimulation() {
+            resultsModal.style.display = 'none';
+            chatMessages.innerHTML = '';
+            feedbackPoints.innerHTML = '<li>Begin talking to receive feedback from GPT-4o</li>';
+            partialEvalDiv.innerHTML = '';
+            simulationArea.style.display = 'none';
+            setupPanel.style.display = 'block';
+            sessionId = null;
+            isRecording = false;
+            startTime = null;
+        }
+
+        function playAudio(url) {
+            const audio = new Audio(url);
+            audio.play();
+        }
+
+        function startTimer() {
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const diff = Math.floor((Date.now() - startTime) / 1000);
+                const mins = String(Math.floor(diff / 60)).padStart(2, '0');
+                const secs = String(diff % 60).padStart(2, '0');
+                timerEl.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
