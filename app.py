@@ -14,6 +14,8 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 import numpy as np
 from sentence_transformers import SentenceTransformer, util
+from io import BytesIO
+import smartsheet  # New: Import smartsheet SDK
 
 # Load .env
 load_dotenv()
@@ -21,7 +23,11 @@ load_dotenv()
 # OpenAI API configurations
 OPENAI_API_ENDPOINT = "https://api.openai.com/v1/chat/completions"
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
-DEFAULT_MODEL = "gpt-4o-mini"  # If nesessary, we can use the more capable GPT-4o model for better conversational abilities
+DEFAULT_MODEL = "gpt-4o"  # If nesessary, we can use the more capable GPT-4o model for better conversational abilities
+
+# Smartsheet API configurations (New)
+SMARTSHEET_API_KEY = os.getenv("SMARTSHEET_API_KEY")
+SMARTSHEET_SHEET_ID = os.getenv("SMARTSHEET_SHEET_ID")
 
 # FFmpeg path configuration
 FFMPEG_PATH = os.getenv("FFMPEG_PATH", "ffmpeg")
@@ -113,12 +119,14 @@ def convert_to_wav(input_file, output_file):
         return False
 
 def generate_speech(text):
-    """Convert text to speech using gTTS."""
-    os.makedirs('static/audio', exist_ok=True)
-    filename = f"static/audio/response_{uuid.uuid4()}.mp3"
-    tts = gTTS(text=text, lang='en', slow=False)
-    tts.save(filename)
-    return "/" + filename
+    """Convert text to speech using gTTS  and return as a data URI without saving to disk."""
+    tts = gTTS(text=text, lang='en', slow=False)  # Create gTTS object
+    fp = BytesIO()  # Create a BytesIO object to work in memory
+    tts.write_to_fp(fp)  # Write audio data to memory
+    fp.seek(0)  # Reset pointer to beginning
+    base64_audio = base64.b64encode(fp.read()).decode("utf-8")  # Base64 encode the binary data
+    data_uri = f"data:audio/mp3;base64,{base64_audio}"  # Format as a data URI
+    return data_uri  # Return the data URI
 
 def transcribe_audio(base64_audio):
     """Transcribe audio using speech recognition."""
@@ -212,19 +220,25 @@ def call_openai_api(messages, model=DEFAULT_MODEL, temperature=0.7, max_tokens=8
 # Coaching Scenario Generation
 #######################################################
 def generate_scenario_intro(difficulty, scenario_type):
-    """Generate a coaching scenario introduction based on difficulty and type."""
+    """
+    Generate a short introduction (3-4 sentences) for a child welfare or child protective services scenario.
+    The introduction should be from the perspective of a worker who needs coaching in a child welfare context.
+    """
     system_message = {
         "role": "system", 
-        "content": "You are a coaching scenario generator, creating realistic workplace situations that require coaching."
+        "content": "You are a coaching scenario generator, creating realistic workplace situations in child welfare or child protective services that require coaching."
     }
     
     user_message = {
         "role": "user", 
         "content": f"""
-Create a short introduction (3-4 sentences) from the perspective of an employee who needs coaching.
+Create a short introduction (3-4 sentences) from the perspective of a child welfare worker (e.g., a Child Protective Specialist)
+who needs coaching. The scenario should focus on child welfare or child protective contexts.
+
 - Difficulty level: {difficulty.capitalize()}
 - Scenario type: {scenario_type.capitalize()}
-Make it conversational and realistic. The employee should briefly explain their situation and challenge.
+Possible topics include safety assessments, mandated reporting, family engagement, dealing with resistant parents,
+or provider agency collaboration. Make it conversational and realistic. The worker should briefly explain their situation and challenge.
 """
     }
     
@@ -357,9 +371,20 @@ The feedback field must be an array of strings. Do not include any explanation, 
 #######################################################
 def generate_final_evaluation(session_id):
     """Generate a comprehensive final evaluation of the coaching session (can be used for partial too)."""
+    # 1. 모든 메시지 가져오기
     messages = ConversationMessage.query.filter_by(session_id=session_id).order_by(ConversationMessage.timestamp).all()
     
-    # Format conversation
+    #2. 코치 메시지 수 체크 (예: 3개 미만이면 충분한 참여가 없다고 판단)
+    coach_messages = [msg for msg in messages if msg.role == "coach"]
+    if len(coach_messages) < 3:
+        return {
+            "percentage": 0,
+            "grade": "F",
+            "strengths": ["No significant coaching interaction occurred."],
+            "areas_of_improvement": ["Coach needs to engage more actively in the session."]
+        }    
+    
+    # 3. 대화 내용을 하나의 문자열로 구성 (각 메시지 앞에 역할 태그 포함)
     conversation_text = ""
     for msg in messages:
         if msg.role == "coach":
@@ -367,7 +392,7 @@ def generate_final_evaluation(session_id):
         else:
             conversation_text += f"Employee: {msg.content}\n"
     
-    # Focus on coach's performance
+    # 4. 평가를 위한 시스템 프롬프트 구성 (추가 조건 포함)
     system_message = {
         "role": "system", 
         "content": """
@@ -403,7 +428,7 @@ Format your response as JSON:
 }
 """
     }
-    
+    # 5. 사용자 메시지에 대화 내용 첨부
     user_message = {
         "role": "user", 
         "content": f"""
@@ -414,9 +439,10 @@ Here is the complete coaching conversation to evaluate:
 Please provide a final evaluation as specified.
 """
     }
-    
+     # 6. OpenAI API 호출하여 평가 응답 받기
     response = call_openai_api([system_message, user_message], temperature=0.3, max_tokens=1000)
     
+    # 7. 응답을 JSON으로 파싱 시도 및 fallback 처리
     try:
         parsed = json.loads(response)
     except:
@@ -440,6 +466,121 @@ Please provide a final evaluation as specified.
             }
     
     return parsed
+
+#######################################################
+# Smartsheet Integration Functions (New)
+#######################################################
+def save_session_to_smartsheet(session_id):
+    """
+    Save the coaching session data to Smartsheet.
+    Columns: Difficulty Level, Scenario Type, Conversation, Coaching Feedback, Feedback Summary, Score, Grade.
+    """
+    # Get session information from the database
+    session_obj = CoachingSession.query.get(session_id)
+    if not session_obj:
+        print("Session not found.")
+        return
+
+    # Retrieve all conversation messages for this session (both coach and employee)
+    messages = ConversationMessage.query.filter_by(session_id=session_id).order_by(ConversationMessage.timestamp).all()
+    conversation_text = ""
+    for msg in messages:
+        conversation_text += f"{msg.role.capitalize()}: {msg.content}\n"
+    
+    # Create a feedback summary from the final evaluation (strengths and areas_of_improvement)
+    try:
+        strengths = json.loads(session_obj.strengths) if session_obj.strengths else []
+    except:
+        strengths = []
+    try:
+        improvements = json.loads(session_obj.areas_of_improvement) if session_obj.areas_of_improvement else []
+    except:
+        improvements = []
+    feedback_summary = "Strengths: " + ", ".join(strengths) + " | Areas for Improvement: " + ", ".join(improvements)
+    
+    # For Coaching Feedback, aggregate all coach messages as an example
+    coaching_feedback = ""
+    for msg in messages:
+         # Initialize feedback_list to ensure it is always defined
+        feedback_list = []
+         # If the message is from an employee and has a feedback field, parse it
+        if msg.role == "employee" and msg.feedback:
+            try:
+                feedback_list = json.loads(msg.feedback)
+            except json.JSONDecodeError:
+                feedback_list = []
+        # Append each feedback line with a newline separator
+        for f in feedback_list:
+            coaching_feedback += f + "\n"
+    
+    # Initialize Smartsheet client
+    smartsheet_client = smartsheet.Smartsheet(SMARTSHEET_API_KEY)
+    smartsheet_client.errors_as_exceptions(True)
+    
+    # Prepare the new row with the required columns.
+    new_row = smartsheet.models.Row()
+    new_row.to_bottom = True  # Append the row at the bottom of the sheet
+
+    # Create cell objects and assign properties
+    cell0 = smartsheet.models.Cell()
+    cell0.column_id = get_column_id("ID")
+    cell0.value = session_obj.id
+
+    cell1 = smartsheet.models.Cell()
+    cell1.column_id = get_column_id("Difficulty Level")
+    cell1.value = session_obj.difficulty
+
+    cell2 = smartsheet.models.Cell()
+    cell2.column_id = get_column_id("Scenario Type")
+    cell2.value = session_obj.scenario_type
+
+    cell3 = smartsheet.models.Cell()
+    cell3.column_id = get_column_id("Conversation")
+    cell3.value = conversation_text
+
+    cell4 = smartsheet.models.Cell()
+    cell4.column_id = get_column_id("Coaching Feedback")
+    cell4.value = coaching_feedback
+
+    cell5 = smartsheet.models.Cell()
+    cell5.column_id = get_column_id("Feedback Summary")
+    cell5.value = feedback_summary
+
+    cell6 = smartsheet.models.Cell()
+    cell6.column_id = get_column_id("Score")
+    cell6.value = session_obj.final_score
+
+    cell7 = smartsheet.models.Cell()
+    cell7.column_id = get_column_id("Grade")
+    cell7.value = session_obj.final_grade
+
+    new_row.cells = [cell0, cell1, cell2, cell3, cell4, cell5, cell6, cell7]
+    
+    # Add the new row to the Smartsheet
+    try:
+        response = smartsheet_client.Sheets.add_rows(SMARTSHEET_SHEET_ID, [new_row])
+        print("Session saved to Smartsheet.")
+    except Exception as e:
+        print("Error saving to Smartsheet:", e)
+
+def get_column_id(column_name):
+    """
+    Helper function to get the Smartsheet column ID by its title.
+    This function should return the column ID corresponding to the given column_name.
+    You need to fill in the mapping from column names to their actual Smartsheet column IDs.
+    """
+    # IMPORTANT: Replace the dictionary below with your actual column name to column ID mapping.
+    column_mapping = {
+        "ID": 6891979856367492,  # Replace with your actual column ID
+        "Difficulty Level": 4480157681405828,  # Replace with your actual column ID
+        "Scenario Type": 8983757308776324,      # Replace with your actual column ID
+        "Conversation": 4532934239539076,         # Replace with your actual column ID
+        "Coaching Feedback": 29334612168580,    # Replace with your actual column ID
+        "Feedback Summary": 7250363805814660,      # Replace with your actual column ID
+        "Score": 2746764178444164,                # Replace with your actual column ID
+        "Grade": 4998563992129412                 # Replace with your actual column ID
+    }
+    return column_mapping.get(column_name)
 
 #######################################################
 # Flask Routes
@@ -614,6 +755,9 @@ def skip_to_end():
     session.strengths = json.dumps(evaluation["strengths"])
     session.areas_of_improvement = json.dumps(evaluation["areas_of_improvement"])
     db.session.commit()
+    
+    # New: Save the session data to Smartsheet
+    save_session_to_smartsheet(session_id)
     
     return jsonify({
         "message": "Session completed successfully.",

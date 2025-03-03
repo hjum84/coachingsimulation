@@ -16,7 +16,7 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 # 4. requirements.txt 파일을 복사하고, 파이썬 라이브러리를 설치합니다.
 COPY requirements.txt .
-RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 
 # 5. 프로젝트의 모든 파일을 컨테이너에 복사합니다.
 COPY . .
