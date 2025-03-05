@@ -244,16 +244,10 @@
             margin-bottom: 5px;
         }
         
-        /* 부분 평가 표시 영역 */
-        #partialEvaluation {
-            margin-top: 10px;
-            padding: 10px;
-            background: #ecf0f1;
-            border-radius: 5px;
-        }
-        #partialEvaluation h4 {
-            margin: 0 0 5px 0;
-        }
+        /* 부분 평가 영역 제거 (또는 display:none 처리) */
+        /* #partialEvaluation {
+            display: none;
+        } */
         
         .results-modal {
             display: none;
@@ -377,9 +371,6 @@
                 <ul class="feedback-points" id="feedbackPoints">
                     <li>Begin talking to receive feedback from GPT-4o</li>
                 </ul>
-                
-                <!-- 부분 평가 표시 영역 -->
-                <div id="partialEvaluation"></div>
             </div>
 
             <!-- Skip to End button -->
@@ -429,7 +420,9 @@
         const finalFeedback = document.getElementById('finalFeedback');
         const restartBtn = document.getElementById('restartBtn');
         const timerEl = document.getElementById('timer');
-        const partialEvalDiv = document.getElementById('partialEvaluation');
+        
+        // 부분 평가 영역 제거
+        // const partialEvalDiv = document.getElementById('partialEvaluation');
 
         const skipBtn = document.getElementById('skipBtn');
         const endSessionBtn = document.getElementById('endSessionBtn');
@@ -440,6 +433,14 @@
         skipBtn.addEventListener('click', skipToEnd);
         endSessionBtn.addEventListener('click', endSession);
         restartBtn.addEventListener('click', resetSimulation);
+
+        // 엔터 키로 전송 가능하게(Shift+Enter는 줄바꿈)
+        textInput.addEventListener('keydown', function(e) {
+            if(e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendTextBtn.click();
+            }
+        });
 
         voiceBtn.addEventListener('click', toggleRecording);
         sendTextBtn.addEventListener('click', async () => {
@@ -513,7 +514,6 @@
                     startRecording(stream);
                 } catch (err) {
                     console.error("Mic error:", err);
-                    // voiceStatus.textContent = 'Error: Cannot access microphone.';
                 }
             } else {
                 stopRecording();
@@ -569,13 +569,13 @@
                     addMessage('coach', data.coach_input);
                     // Employee response
                     addMessage('employee', data.text);
-                    // Update feedback from employee
+                    // 마지막 코치 입력에 대한 피드백만 표시하도록 수정
                     updateFeedback(data.evaluation);
-                    
-                    // 부분 평가(Partial Evaluation) 있으면 업데이트
-                    if (data.partial_score) {
-                        updatePartialEvaluation(data.partial_score);
-                    }
+
+                    // 부분 평가 표시 제거
+                    // if(data.partial_score) {
+                    //     updatePartialEvaluation(data.partial_score);
+                    // }
 
                     if(data.audio) {
                         playAudio(data.audio);
@@ -592,8 +592,10 @@
             }
         }
 
+        // 기존 누적 방식 -> 최근 것만 보이도록 수정
         function updateFeedback(evaluation) {
             if(!evaluation || !evaluation.feedback) return;
+            feedbackPoints.innerHTML = '';  // 이전 피드백 지우기
             evaluation.feedback.forEach(f => {
                 const li = document.createElement('li');
                 li.textContent = f;
@@ -601,28 +603,12 @@
             });
         }
 
-        // 부분 평가를 feedback-panel 하단에 표시
+        /*
+        // 부분 평가 표시를 원한다면 사용, 현재는 제거
         function updatePartialEvaluation(score) {
-            partialEvalDiv.innerHTML = ""; // 기존 내용 초기화
-            if (!score || !score.grade || !score.percentage || !score.strengths || !score.areas_of_improvement) {
-                partialEvalDiv.innerHTML = "<p>Partial evaluation data not available.</p>";
-                return;
-            }
-            partialEvalDiv.innerHTML += "<h4>Coach Evaluation (so far)</h4>";
-            partialEvalDiv.innerHTML += "<p>Grade so far: <strong>" + score.grade + "</strong> (" + score.percentage + "%)</p>";
-            
-            partialEvalDiv.innerHTML += "<p><strong>Strengths:</strong></p><ul>";
-            score.strengths.forEach(s => {
-                partialEvalDiv.innerHTML += "<li>" + s + "</li>";
-            });
-            partialEvalDiv.innerHTML += "</ul>";
-            
-            partialEvalDiv.innerHTML += "<p><strong>Areas of Improvement:</strong></p><ul>";
-            score.areas_of_improvement.forEach(a => {
-                partialEvalDiv.innerHTML += "<li>" + a + "</li>";
-            });
-            partialEvalDiv.innerHTML += "</ul>";
+            // UI 표시 로직 제거 또는 주석
         }
+        */
 
         async function skipToEnd() {
             if(!sessionId) {
@@ -708,7 +694,9 @@
             resultsModal.style.display = 'none';
             chatMessages.innerHTML = '';
             feedbackPoints.innerHTML = '<li>Begin talking to receive feedback from GPT-4o</li>';
-            partialEvalDiv.innerHTML = '';
+            // 부분 평가도 초기화
+            // if (partialEvalDiv) partialEvalDiv.innerHTML = '';
+            
             simulationArea.style.display = 'none';
             setupPanel.style.display = 'block';
             sessionId = null;
